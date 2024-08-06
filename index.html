@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tip Allocation</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: black;
+        color: white;
+      }
+      .result {
+        margin-top: 20px;
+      }
+      .form-label {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="text-center">
+        Kaiser's<br />Tip-AllocatorTron <br />for Valley House Brewery<br />
+        @ Duvall, Washington
+      </h1>
+      <div class="form-group">
+        <label for="totalTips" class="form-label">Total Tips ($):</label>
+        <input
+          type="number"
+          class="form-control"
+          id="totalTips"
+          placeholder="Enter total tips"
+        />
+      </div>
+      <h3>Kitchen Staff</h3>
+      <div id="kitchenContainer"></div>
+      <button id="addKitchen" class="btn btn-secondary mb-3">
+        Add Kitchen Employee
+      </button>
+
+      <h3>FOH Staff</h3>
+      <div id="fohContainer"></div>
+      <button id="addFOH" class="btn btn-secondary mb-3">
+        Add FOH Employee</button
+      ><br />
+
+      <button id="calculate" class="btn btn-primary">Calculate Tips</button>
+
+      <div id="result" class="result"></div>
+    </div>
+
+    <div class="container">
+      <footer class="footer mt-5 p-3 text-center bg-black text-warning">
+        &copy; Kaiser<br />Made with pride, love, and power by <br />Kaiser
+        Shomstok right across the street <br />from the Microsoft Campus.
+        <br />Bill Gates hates me and my site!
+      </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="app1.js"></script>
+  </body>
+</html>
