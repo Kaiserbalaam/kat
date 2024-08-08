@@ -5,20 +5,20 @@ $(document).ready(function () {
   $("#addKitchen").click(function () {
     kitchenCount++;
     $("#kitchenContainer").append(
-      `<div class="form-row align-items-end mb-2" id="kitchen${kitchenCount}">
-                  <div class="form-group col-md-3">
-                      <label for="kitchenName${kitchenCount}" class="form-label">Name:</label>
-                      <input type="text" class="form-control" id="kitchenName${kitchenCount}" placeholder="Enter name">
+      `<div class="form-row align-items-end" id="kitchen${kitchenCount}">
+                  <div class="form-group employee-input">
+                      <label for="kitchenName${kitchenCount}">Name:</label>
+                      <input type="text" class="form-control" id="kitchenName${kitchenCount}" placeholder="Name">
                   </div>
-                  <div class="form-group col-md-3">
-                      <label for="kitchenHours${kitchenCount}" class="form-label">Hours:</label>
-                      <input type="number" class="form-control" id="kitchenHours${kitchenCount}" placeholder="Enter hours">
+                  <div class="form-group employee-input">
+                      <label for="kitchenHours${kitchenCount}">Hours:</label>
+                      <input type="number" class="form-control" id="kitchenHours${kitchenCount}" placeholder="Hours">
                   </div>
-                  <div class="form-group col-md-3">
-                      <label for="kitchenMinutes${kitchenCount}" class="form-label">Minutes:</label>
-                      <input type="number" class="form-control" id="kitchenMinutes${kitchenCount}" placeholder="Enter minutes">
+                  <div class="form-group employee-input">
+                      <label for="kitchenMinutes${kitchenCount}">Mins:</label>
+                      <input type="number" class="form-control" id="kitchenMinutes${kitchenCount}" placeholder="Mins">
                   </div>
-                  <div class="form-group col-md-3">
+                  <div class="form-group employee-input">
                       <button class="btn btn-danger" onclick="removeEmployee('kitchen${kitchenCount}')">Remove</button>
                   </div>
               </div>`
@@ -28,20 +28,20 @@ $(document).ready(function () {
   $("#addFOH").click(function () {
     fohCount++;
     $("#fohContainer").append(
-      `<div class="form-row align-items-end mb-2" id="foh${fohCount}">
-                  <div class="form-group col-md-3">
-                      <label for="fohName${fohCount}" class="form-label">Name:</label>
-                      <input type="text" class="form-control" id="fohName${fohCount}" placeholder="Enter name">
+      `<div class="form-row align-items-end" id="foh${fohCount}">
+                  <div class="form-group employee-input">
+                      <label for="fohName${fohCount}">Name:</label>
+                      <input type="text" class="form-control" id="fohName${fohCount}" placeholder="Name">
                   </div>
-                  <div class="form-group col-md-3">
-                      <label for="fohHours${fohCount}" class="form-label">Hours:</label>
-                      <input type="number" class="form-control" id="fohHours${fohCount}" placeholder="Enter hours">
+                  <div class="form-group employee-input">
+                      <label for="fohHours${fohCount}">Hours:</label>
+                      <input type="number" class="form-control" id="fohHours${fohCount}" placeholder="Hours">
                   </div>
-                  <div class="form-group col-md-3">
-                      <label for="fohMinutes${fohCount}" class="form-label">Minutes:</label>
-                      <input type="number" class="form-control" id="fohMinutes${fohCount}" placeholder="Enter minutes">
+                  <div class="form-group employee-input">
+                      <label for="fohMinutes${fohCount}">Mins:</label>
+                      <input type="number" class="form-control" id="fohMinutes${fohCount}" placeholder="Mins">
                   </div>
-                  <div class="form-group col-md-3">
+                  <div class="form-group employee-input">
                       <button class="btn btn-danger" onclick="removeEmployee('foh${fohCount}')">Remove</button>
                   </div>
               </div>`
@@ -56,53 +56,56 @@ $(document).ready(function () {
       return;
     }
 
-    let kitchenData = getEmployeeData("kitchen", kitchenCount);
-    let fohData = getEmployeeData("foh", fohCount);
+    let kitchenTimes = getEmployeeTimes("kitchen", kitchenCount);
+    let fohTimes = getEmployeeTimes("foh", fohCount);
 
     let kitchenTips = totalTips * 0.25;
     let fohTips = totalTips * 0.75;
 
-    let kitchenShares = calculateShares(kitchenTips, kitchenData.times);
-    let fohShares = calculateShares(fohTips, fohData.times);
+    let kitchenShares = calculateShares(kitchenTips, kitchenTimes);
+    let fohShares = calculateShares(fohTips, fohTimes);
 
-    displayResults("Kitchen", kitchenShares, kitchenData.names);
-    displayResults("FOH", fohShares, fohData.names);
+    displayResults("Kitchen", kitchenShares, kitchenCount);
+    displayResults("FOH", fohShares, fohCount);
   });
 });
 
-function getEmployeeData(type, count) {
-  let names = [];
+function getEmployeeTimes(type, count) {
   let times = [];
   for (let i = 1; i <= count; i++) {
-    let name = $(`#${type}Name${i}`).val();
     let hours = parseInt($(`#${type}Hours${i}`).val());
     let minutes = parseInt($(`#${type}Minutes${i}`).val());
+    let name = $(`#${type}Name${i}`).val();
 
     if (
-      name &&
       !isNaN(hours) &&
       !isNaN(minutes) &&
       hours >= 0 &&
-      minutes >= 0
+      minutes >= 0 &&
+      name
     ) {
-      names.push(name);
-      times.push(hours * 60 + minutes);
+      times.push({ name: name, time: hours * 60 + minutes });
     }
   }
-  return { names, times };
+  return times;
 }
 
 function calculateShares(totalTips, employeeTimes) {
-  let totalTime = employeeTimes.reduce((a, b) => a + b, 0);
-  return employeeTimes.map((minutes) => (minutes / totalTime) * totalTips);
+  let totalTime = employeeTimes.reduce((a, b) => a + b.time, 0);
+  return employeeTimes.map((employee) => ({
+    name: employee.name,
+    share: (employee.time / totalTime) * totalTips
+  }));
 }
 
-function displayResults(type, shares, names) {
+function displayResults(type, shares, count) {
   let resultDiv = $("#result");
   resultDiv.append(`<h4>${type} staff tips allocation:</h4>`);
   shares.forEach((share, index) => {
     resultDiv.append(
-      `<p>${names[index]} gets $${share.toFixed(2)} in tips</p>`
+      `<p>${type} Employee ${index + 1} (${
+        share.name
+      }) gets $${share.share.toFixed(2)} in tips</p>`
     );
   });
 }
